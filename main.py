@@ -32,6 +32,10 @@ class Project(BaseModel):
     name: str
     desc: str
 
+class GroupName(BaseModel):
+    name:str
+    id:int
+
 # home route
 @app.get("/", tags=["home"])
 def read_root():
@@ -135,3 +139,20 @@ def project_details(group_id: int):
             raise Exception()
     except:
         return f"Project with group id: {group_id} wasn't registered!"
+
+  
+# update group name
+@app.post("/group_details/update_group_name", tags=["group_details"])
+def update_group_name(group: GroupName):
+    query = {"id": group.id}
+    new_values = {"$set": {"name": group.name}}
+    try:
+        old_data = groups_data.find_one(
+            {"id": group.id}, {'_id': 0})
+        groups_data.update_one(query, new_values)
+        new_data = groups_data.find_one(
+            {"id": group.id}, {'_id': 0})
+
+        return {"old_data": old_data, "updated_data": new_data}
+    except:
+        return "Something went wrong!"

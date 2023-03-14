@@ -156,3 +156,19 @@ def update_group_name(group: GroupName):
         return {"old_data": old_data, "updated_data": new_data}
     except:
         return "Something went wrong!"
+
+# update project data
+@app.post("/project_details/update_data", tags=["project_details"])
+def update_project(project: Project):
+    query = {"group_id": project.group_id}
+    new_values = {"$set": {"name": project.name, "desc": project.desc}}
+    try:
+        old_data = projects_data.find_one(
+            {"group_id": project.group_id}, {'_id': 0})
+
+        projects_data.update_one(query, new_values)
+        new_data = projects_data.find_one(
+            {"group_id": project.group_id}, {'_id': 0})
+        return {"old_data": old_data, "updated_data": new_data}
+    except:
+        return "Something went wrong!"

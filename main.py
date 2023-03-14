@@ -111,6 +111,12 @@ def register_project(project: Project):
         return "Error has occured!"
 
 
+# all project names
+@app.get("/project_names", tags=["project_details"])
+def project_names():
+    all_project_names = [x["name"] for x in list(projects_data.find({}, {'_id': 0}))]
+    return all_project_names
+
 # all groups data fetching
 @app.get("/project_details", tags=["project_details"])
 def project_details():

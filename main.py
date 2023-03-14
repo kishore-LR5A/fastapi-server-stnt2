@@ -99,7 +99,7 @@ def group_members(group_id: int):
 # projects urls
 #  project regisration
 @app.post("/register_project/", tags=["project_details"])
-def register_group(project: Project):
+def register_project(project: Project):
     try:
         projects_data.insert_one({
             "name": project.name,
@@ -109,3 +109,23 @@ def register_group(project: Project):
         return "project registration successful!"
     except:
         return "Error has occured!"
+
+
+# all groups data fetching
+@app.get("/project_details", tags=["project_details"])
+def project_details():
+    all_projects = list(projects_data.find({}, {'_id': 0}))
+    return all_projects
+
+
+# projects data fetching with id
+@app.get("/project_details/{group_id}", tags=["project_details"])
+def project_details(group_id: int):
+    try:
+        data = projects_data.find_one({"id": group_id}, {'_id': 0})
+        if (data != None):
+            return data
+        else:
+            raise Exception()
+    except:
+        return f"Project with group id: {group_id} wasn't registered!"
